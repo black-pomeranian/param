@@ -1,4 +1,5 @@
 // グローバル変数として各スライダーの値を保持
+// 0~1の値。数値の加工をp5js内で行う
 let sliderValues = {
     slider1: 0.5,
     slider2: 0.5,
@@ -33,48 +34,86 @@ function setup() {
     gl.enable(gl.STENCIL_TEST);
     // 描画時にストロークを無効化
     noStroke();
-  }
+}
   
-  function draw() {
+function draw() {
     // 背景色を設定
     background(64);
-    // ステンシルバッファをクリア
-    gl.clear(gl.STENCIL_BUFFER_BIT);
-    // ステンシルバッファを0で初期化
-    gl.clearStencil(0);
+
+    //Stencil Bufferの更新
+    updateStencilBuffer();
   
     // ライトを設定
-    directionalLight(255, 255, 255, 0, 0, -1); // 指向性ライト
-    ambientLight(128); // 環境光
-  
-    // ステンシルテスト条件を常に通過に設定
-    gl.stencilFunc(gl.ALWAYS, 1, ~0);
-    // ステンシル操作：フラグメント描画時にステンシル値を1に置き換え
-    gl.stencilOp(gl.KEEP, gl.REPLACE, gl.REPLACE);
+    updateLight();
+
+    //Sliderの値を取得
+    //以下の値を加工してコンテンツに適用する
+    let slider1Value = sliderValues.slider1; 
+    let slider2Value = sliderValues.slider2;
+    let slider3Value = sliderValues.slider3; 
   
     // 四角形を描画
+    setUnderLayer();
     translate(-25, -25, 0); // 座標を平行移動
     fill(0, 255, 0); // 緑色で塗りつぶし
     plane(100, 400); // 四角形を描画
   
+  
+    // 円を描画
+    setOverLayer();
+    translate(50, 50, 0); // 座標を平行移動
+    fill(0, 255, 0); // 緑色で塗りつぶし
+    ellipse(0, -200, 200, 200); // 円を描画
+
+    //マスク部分を描画
+    drawMask(color(255, 255, 255));
+}
+
+
+
+//背景の上に描画するコンテンツに対して適用
+function setUnderLayer(){
+    // ステンシルテスト条件を常に通過に設定
+    gl.stencilFunc(gl.ALWAYS, 1, ~0);
+    // ステンシル操作：フラグメント描画時にステンシル値を1に置き換え
+    gl.stencilOp(gl.KEEP, gl.REPLACE, gl.REPLACE);
+}
+  
+//UnderLayerに重なるコンテンツに対して適用
+function setOverLayer(){
     // ステンシルテスト条件を常に通過に設定
     gl.stencilFunc(gl.ALWAYS, 0, ~0);
     // ステンシル操作：フラグメント描画時にステンシル値をインクリメント
     gl.stencilOp(gl.KEEP, gl.INCR, gl.INCR);
-  
-    // 円を描画
-    translate(50, 50, 0); // 座標を平行移動
-    fill(0, 255, 0); // 緑色で塗りつぶし
-    ellipse(0, -200, 200, 200); // 円を描画
-  
+}
+
+//UnderLayerとOverLayerの重なる部分に対して適用
+function setMask(){
     // ステンシル値が2のピクセルのみ通過させる条件を設定
     gl.stencilFunc(gl.EQUAL, 2, ~0);
     // ステンシル操作：ステンシルバッファを変更しない
     gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-  
+}
+
+//Mask部分の描画に使用
+function drawMask(col){
+    setMask();
     // 重なり部分へに白を描画
-    translate(-25, -25, 0); // 座標を平行移動
-    fill(255, 255, 255); // 白色で塗りつぶし
+    translate(0, 0, 0); // 座標を平行移動
+    fill(col); // 白色で塗りつぶし
     plane(width, height); // キャンバス全体に平面を描画
-  }
+}
+
+//Stencil Bufferの更新用
+function updateStencilBuffer(){
+    // ステンシルバッファをクリア
+    gl.clear(gl.STENCIL_BUFFER_BIT);
+    // ステンシルバッファを0で初期化
+    gl.clearStencil(0);
+}
+
+function updateLight(){
+    directionalLight(255, 255, 255, 0, 0, -1); // 指向性ライト
+    ambientLight(128); // 環境光
+}
 
