@@ -52,18 +52,30 @@ function draw() {
     let slider2Value = sliderValues.slider2;
     let slider3Value = sliderValues.slider3; 
   
-    // 四角形を描画
+    /* 下のレイヤー開始 */
     setUnderLayer();
-    translate(-25, -25, 0); // 座標を平行移動
     fill(0, 255, 0); // 緑色で塗りつぶし
-    plane(100, 400); // 四角形を描画
+
+    // 四角形を描画
+    rect(-50, -200, 100, 400);
+    rect(120, -200, 100, 100);
+
+    
+
+    /* 下のレイヤーここまで */ 
+
   
   
-    // 円を描画
+    /* 上のレイヤー開始 */
     setOverLayer();
-    translate(50, 50, 0); // 座標を平行移動
     fill(0, 255, 0); // 緑色で塗りつぶし
-    ellipse(0, -200, 200, 200); // 円を描画
+    // 円を描画
+
+    circle(50, -150, 200, 200); 
+
+
+    /* 上のレイヤーここまで */
+
 
     //マスク部分を描画
     drawMask(color(255, 255, 255));
