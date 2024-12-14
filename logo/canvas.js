@@ -69,9 +69,9 @@ function draw() {
     /* 上のレイヤー開始 */
     setOverLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
-    // 円を描画
 
-    circle(50, -150, 200, 200); 
+    // 円を描画
+    smoothCircle(50, -150, 100, 100);
 
 
     /* 上のレイヤーここまで */
@@ -129,3 +129,12 @@ function updateLight(){
     ambientLight(128); // 環境光
 }
 
+function smoothCircle(x, y, radius, detail) {
+    beginShape();
+    for (let i = 0; i < TWO_PI; i += TWO_PI / detail) {
+      let vx = x + cos(i) * radius;
+      let vy = y + sin(i) * radius;
+      vertex(vx, vy);
+    }
+    endShape(CLOSE);
+  }
