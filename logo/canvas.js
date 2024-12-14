@@ -69,6 +69,7 @@ function draw() {
     setOverLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
+
     // 円を描画
     smoothCircle(50, -150, 100, 100);
 
