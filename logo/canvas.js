@@ -52,16 +52,16 @@ function draw() {
     let slider2Value = sliderValues.slider2;
     let slider3Value = sliderValues.slider3;
 
-    drawP1(-480);
-    drawP2(-140);
-    drawP3(260);
-    drawP4(600);
+    drawP1(-480, slider1Value);
+    drawP2(-140, slider1Value);
+    drawP3(260, slider1Value);
+    drawP4(600, slider1Value);
 
     //マスク部分を描画
     drawMask(color(255, 255, 255));
 }
 
-function drawP1(offsetX) {
+function drawP1(offsetX, circleVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
@@ -77,11 +77,11 @@ function drawP1(offsetX) {
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 円を描画
-    smoothCircle(offsetX, -80, 150, 100);
+    smoothCircle(offsetX, -80, 150 * (0.5 + 1 - circleVariation), 100);
     /* 上のレイヤーここまで */
 }
 
-function drawP2(offsetX) {
+function drawP2(offsetX, circleVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
@@ -97,11 +97,11 @@ function drawP2(offsetX) {
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 円を描画
-    smoothCircle(offsetX, -80, 120, 100);
+    smoothCircle(offsetX, -80, 120 * (0.5 + circleVariation), 100);
     /* 上のレイヤーここまで */
 }
 
-function drawP3(offsetX) {
+function drawP3(offsetX, circleVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
@@ -117,11 +117,11 @@ function drawP3(offsetX) {
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 円を描画
-    smoothCircle(offsetX, -150, 70, 100);
+    smoothCircle(offsetX, -150, 70 * (0.5 + circleVariation), 100);
     /* 上のレイヤーここまで */
 }
 
-function drawP4(offsetX) {
+function drawP4(offsetX, circleVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
@@ -137,7 +137,7 @@ function drawP4(offsetX) {
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 円を描画
-    smoothCircle(offsetX, -20, 200, 100);
+    smoothCircle(offsetX, -20, 200 * (0.5 + 1 - circleVariation), 100);
     /* 上のレイヤーここまで */
 }
 
