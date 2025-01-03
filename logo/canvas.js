@@ -52,6 +52,14 @@ function draw() {
     let slider2Value = sliderValues.slider2;
     let slider3Value = sliderValues.slider3;
 
+    drawP1();
+
+
+    //マスク部分を描画
+    drawMask(color(255, 255, 255));
+}
+
+function drawP1() {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
@@ -59,26 +67,18 @@ function draw() {
     // 四角形を描画
     roundedRect(-50, -200, 100, 400, 20);
 
-
-
     /* 下のレイヤーここまで */
-
 
 
     /* 上のレイヤー開始 */
     setOverLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
-
     // 円を描画
     smoothCircle(50, -150, 100, 100);
 
 
     /* 上のレイヤーここまで */
-
-
-    //マスク部分を描画
-    drawMask(color(255, 255, 255));
 }
 
 
