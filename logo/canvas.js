@@ -38,7 +38,7 @@ function setup() {
 
 function draw() {
     // 背景色を設定
-    background(64);
+    background(255);
 
     //Stencil Bufferの更新
     updateStencilBuffer();
