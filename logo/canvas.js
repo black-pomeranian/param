@@ -52,20 +52,22 @@ function draw() {
     let slider2Value = sliderValues.slider2;
     let slider3Value = sliderValues.slider3;
 
-    drawP1();
-
+    drawP1(-480);
+    drawP2(-140);
+    drawP3(260);
+    drawP4(600);
 
     //マスク部分を描画
     drawMask(color(255, 255, 255));
 }
 
-function drawP1() {
+function drawP1(offsetX) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 四角形を描画
-    roundedRect(-50, -200, 100, 400, 20);
+    roundedRect(offsetX - 270, -200, 180, 350, 20);
 
     /* 下のレイヤーここまで */
 
@@ -75,13 +77,69 @@ function drawP1() {
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 円を描画
-    smoothCircle(50, -150, 100, 100);
-
-
+    smoothCircle(offsetX, -80, 150, 100);
     /* 上のレイヤーここまで */
 }
 
+function drawP2(offsetX) {
+    /* 下のレイヤー開始 */
+    setUnderLayer();
+    fill(0, 255, 0); // 緑色で塗りつぶし
 
+    // 四角形を描画
+    roundedRect(offsetX - 60, -160, 40, 320, 14);
+
+    /* 下のレイヤーここまで */
+
+
+    /* 上のレイヤー開始 */
+    setOverLayer();
+    fill(0, 255, 0); // 緑色で塗りつぶし
+
+    // 円を描画
+    smoothCircle(offsetX, -80, 120, 100);
+    /* 上のレイヤーここまで */
+}
+
+function drawP3(offsetX) {
+    /* 下のレイヤー開始 */
+    setUnderLayer();
+    fill(0, 255, 0); // 緑色で塗りつぶし
+
+    // 四角形を描画
+    roundedRect(offsetX - 200, -150, 200, 260, 20);
+
+    /* 下のレイヤーここまで */
+
+
+    /* 上のレイヤー開始 */
+    setOverLayer();
+    fill(0, 255, 0); // 緑色で塗りつぶし
+
+    // 円を描画
+    smoothCircle(offsetX, -150, 70, 100);
+    /* 上のレイヤーここまで */
+}
+
+function drawP4(offsetX) {
+    /* 下のレイヤー開始 */
+    setUnderLayer();
+    fill(0, 255, 0); // 緑色で塗りつぶし
+
+    // 四角形を描画
+    roundedRect(offsetX - 160, -200, 80, 360, 20);
+
+    /* 下のレイヤーここまで */
+
+
+    /* 上のレイヤー開始 */
+    setOverLayer();
+    fill(0, 255, 0); // 緑色で塗りつぶし
+
+    // 円を描画
+    smoothCircle(offsetX, -20, 200, 100);
+    /* 上のレイヤーここまで */
+}
 
 //背景の上に描画するコンテンツに対して適用
 function setUnderLayer() {
