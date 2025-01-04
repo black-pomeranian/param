@@ -52,22 +52,22 @@ function draw() {
     let slider2Value = sliderValues.slider2;
     let slider3Value = sliderValues.slider3;
 
-    drawP1(-480, slider1Value);
-    drawP2(-140, slider1Value);
-    drawP3(260, slider1Value);
-    drawP4(600, slider1Value);
+    drawP1(-480, slider1Value, slider2Value);
+    drawP2(-140, slider1Value, slider2Value);
+    drawP3(260, slider1Value, slider2Value);
+    drawP4(600, slider1Value, slider2Value);
 
     //マスク部分を描画
     drawMask(color(255, 255, 255));
 }
 
-function drawP1(offsetX, circleVariation) {
+function drawP1(offsetX, circleVariation, rectVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 四角形を描画
-    roundedRect(offsetX - 270, -200, 180, 350, 20);
+    roundedRect(offsetX - 270, -200, 180 * (0.5 + rectVariation), 350, 20);
 
     /* 下のレイヤーここまで */
 
@@ -81,13 +81,13 @@ function drawP1(offsetX, circleVariation) {
     /* 上のレイヤーここまで */
 }
 
-function drawP2(offsetX, circleVariation) {
+function drawP2(offsetX, circleVariation, rectVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 四角形を描画
-    roundedRect(offsetX - 60, -160, 40, 320, 14);
+    roundedRect(offsetX - 60, -160, 40, 320 * (0.5 + rectVariation), 14);
 
     /* 下のレイヤーここまで */
 
@@ -101,13 +101,15 @@ function drawP2(offsetX, circleVariation) {
     /* 上のレイヤーここまで */
 }
 
-function drawP3(offsetX, circleVariation) {
+function drawP3(offsetX, circleVariation, rectVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 四角形を描画
-    roundedRect(offsetX - 200, -150, 200, 260, 20);
+    let rectW = 200
+    let offsetW = rectW * (0.5 + 1 - rectVariation) - rectW
+    roundedRect(offsetX - 200 - offsetW, -150, 200 + offsetW, 260 * (0.5 + 1 - rectVariation), 20);
 
     /* 下のレイヤーここまで */
 
@@ -121,13 +123,15 @@ function drawP3(offsetX, circleVariation) {
     /* 上のレイヤーここまで */
 }
 
-function drawP4(offsetX, circleVariation) {
+function drawP4(offsetX, circleVariation, rectVariation) {
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 四角形を描画
-    roundedRect(offsetX - 160, -200, 80, 360, 20);
+    let rectH = 360
+    let offsetH = rectH * (0.5 + rectVariation) - rectH
+    roundedRect(offsetX - 160, -200 - offsetH, 80, 360 + offsetH, 20);
 
     /* 下のレイヤーここまで */
 
