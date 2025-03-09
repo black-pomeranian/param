@@ -1,3 +1,12 @@
+//後にシリアル通信リストの0番目で上書きされるが念のため
+//Windows用
+let serialPortName = 'COM3';
+//Mac用
+// let serialPortName = '/dev/cu.usbmodem11201';
+
+let result = '';
+
+
 // グローバル変数として各スライダーの値を保持
 // 0~1の値。数値の加工をp5js内で行う
 let sliderValues = {
@@ -6,6 +15,7 @@ let sliderValues = {
     slider3: 0.5
 };
 
+/*
 // DOMが読み込まれた後にスライダーのイベントリスナーを設定
 document.addEventListener('DOMContentLoaded', () => {
     // スライダーの値が変更されたときのイベントリスナー
@@ -17,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+*/
 
 let canvas, gl;
 
@@ -34,6 +45,17 @@ function setup() {
     gl.enable(gl.STENCIL_TEST);
     // 描画時にストロークを無効化
     noStroke();
+
+    //シリアルポートの接続
+    // create instance of p5.SerialPort
+    serial = new p5.SerialPort();
+
+    // print version of p5.serialport library
+    console.log('p5.serialport.js ' + serial.version);
+
+    serial.list();
+    serial.on('list', updatePort);
+    serial.on('data', getData);
 }
 
 function draw() {
@@ -48,16 +70,16 @@ function draw() {
 
     //Sliderの値を取得
     //以下の値を加工してコンテンツに適用する
-    let slider1Value = sliderValues.slider1;
-    let slider2Value = sliderValues.slider2;
-    let slider3Value = sliderValues.slider3;
+    let slider1Value = sliderValues.slider1 * 100;
+    let slider2Value = sliderValues.slider2 * 200;
+    let slider3Value = sliderValues.slider3 * 200;
 
     /* 下のレイヤー開始 */
     setUnderLayer();
     fill(0, 255, 0); // 緑色で塗りつぶし
 
     // 四角形を描画
-    roundedRect(-50, -200, 100, 400, 20);
+    roundedRect(-slider1Value, -200, slider2Value, 400, 20);
 
 
 
@@ -71,7 +93,7 @@ function draw() {
 
 
     // 円を描画
-    smoothCircle(50, -150, 100, 100);
+    smoothCircle(slider1Value, -150, slider3Value, slider3Value);
 
 
     /* 上のレイヤーここまで */
@@ -79,6 +101,8 @@ function draw() {
 
     //マスク部分を描画
     drawMask(color(255, 255, 255));
+
+    console.log("Received:", result);
 }
 
 
@@ -155,3 +179,31 @@ function roundedRect(x, y, w, h, r) {
     quadraticVertex(x + w, y, x + w - r, y);
     endShape(CLOSE);
 }
+
+// callback function to update serial port name
+function updatePort(portList) {
+    if (portList.length > 0) {
+        serialPortName = portList[0]; // 一番最初のポートを選択
+        console.log("Using port:", serialPortName);
+        serial.openPort(serialPortName);
+    } else {
+        console.log("No serial ports found.");
+    }
+}
+
+
+function getData() {
+    let data = serial.readLine().trim(); // 受信データを取得し、前後の空白を削除
+    if (!data) return; // データが空なら何もしない
+
+    let values = data.split(','); // データをカンマ区切りで分割（複数の値が送られる場合）
+    
+    if (values.length >= 3) { // 3つ以上の値があることを確認
+        sliderValues.slider1 = constrain(parseInt(values[0]) / 1023, 0, 1);
+        sliderValues.slider2 = constrain(parseInt(values[1]) / 1023, 0, 1);
+        sliderValues.slider3 = constrain(parseInt(values[2]) / 1023, 0, 1);
+        
+        console.log("Updated sliderValues:", sliderValues);
+    }
+}
+
