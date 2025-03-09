@@ -8,7 +8,8 @@
 
 ## 3.環境構築
 1. p5.serialserverを準備
-- git clone https://github.com/p5-serial/p5.serialserver.git（Zipファイル解凍だとエラーが出た）
+- git clone https://github.com/p5-serial/p5.serialserver.git
+→（Zipファイル解凍だとエラーが出た）
 - cd p5.serialserver
 - npm install
 - node startserver.js
