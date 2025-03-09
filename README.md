@@ -7,7 +7,13 @@
 - p5.js : 1.9.4
 
 ## 3.環境構築
-現状、logoディレクトリ内のindex.htmlをローカルサーバーで立ち上げれば動く（WebGLはうまくいかないので、VS Code拡張のLive p5をインストールして見かけを確認する）
+1. p5.serialserverを準備
+- git clone https://github.com/p5-serial/p5.serialserver.git（Zipファイル解凍だとエラーが出た）
+- cd p5.serialserver
+- npm install
+- node startserver.js
+
+2. logoディレクトリ内のindex.htmlをローカルサーバーで立ち上げれば動く（LiveServerでは動作確認済み）
 
 
 ## 4.ディレクトリについて
