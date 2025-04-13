@@ -15,19 +15,8 @@ let sliderValues = {
     slider3: 0.5
 };
 
-/*
-// DOMが読み込まれた後にスライダーのイベントリスナーを設定
-document.addEventListener('DOMContentLoaded', () => {
-    // スライダーの値が変更されたときのイベントリスナー
-    document.querySelectorAll('input[type="range"]').forEach(slider => {
-        slider.addEventListener('input', function () {
-            const value = parseFloat(this.value);
-            sliderValues[this.id] = value;
-            document.getElementById(`value${this.id.slice(-1)}`).textContent = value.toFixed(2);
-        });
-    });
-});
-*/
+// ボタンのための変数
+let saveButton;
 
 let canvas, gl;
 
@@ -45,6 +34,16 @@ function setup() {
     gl.enable(gl.STENCIL_TEST);
     // 描画時にストロークを無効化
     noStroke();
+    
+    // デフォルトの色を設定（緑）
+    currentObjectColor = [0, 255, 0];
+    
+    // ループを停止し、必要なときだけredraw()で描画
+    // これにより保存時の色変更が効果的に機能します
+    // noLoop();
+    
+    // redrawモードに設定（必要な時のみ描画）
+    // frameRate(30);
 
     //シリアルポートの接続
     // create instance of p5.SerialPort
@@ -56,6 +55,131 @@ function setup() {
     serial.list();
     serial.on('list', updatePort);
     serial.on('data', getData);
+    
+    // 保存ボタンを作成
+    createSaveButton();
+}
+
+// 保存ボタンを作成する関数
+function createSaveButton() {
+    saveButton = createButton('画像を保存');
+    saveButton.position(windowWidth - 120, windowHeight - 60);
+    saveButton.size(100, 40);
+    saveButton.style('background-color', '#4CAF50');
+    saveButton.style('color', 'white');
+    saveButton.style('border', 'none');
+    saveButton.style('border-radius', '4px');
+    saveButton.style('font-size', '14px');
+    saveButton.style('cursor', 'pointer');
+    saveButton.mouseOver(() => saveButton.style('background-color', '#45a049'));
+    saveButton.mouseOut(() => saveButton.style('background-color', '#4CAF50'));
+    saveButton.mousePressed(saveCanvasImage);
+}
+
+// 保存用に色を変更して描画し直す関数
+function saveCanvasImage() {
+    // 通常の描画ループを一時停止
+    noLoop();
+    
+    // 保存前の色を記憶
+    const originalColorValues = [...currentObjectColor]; // 配列をコピー
+    
+    try {
+        // 色を黒に変更
+        currentObjectColor = [0, 0, 0]; // 黒色
+        
+        // 黒色で1フレーム描画
+        redraw();
+        
+        // 画像を保存
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`;
+        const filename = `stencil_art_${timestamp}`;
+        
+        saveCanvas(canvas, filename, 'png');
+        
+        // 保存の通知
+        console.log(`画像を保存しました: ${filename}.png (黒色バージョン)`);
+        console.log('印刷サイズ: 5×7インチ (画像編集ソフトで印刷時に設定してください)');
+        
+        // 画面に一時的な通知を表示
+        showSaveNotification();
+    } finally {
+        // 元の色に戻す（try-finallyで確実に元に戻す）
+        currentObjectColor = originalColorValues;
+        
+        // 元の色で再描画
+        redraw();
+        
+        // 通常の描画ループを再開
+        loop();
+    }
+}
+
+// オブジェクトの色を管理するグローバル変数
+let currentObjectColor = [0, 255, 0]; // デフォルトは緑色
+
+// 保存通知を画面に表示する関数
+function showSaveNotification() {
+    // DOM要素を作成
+    let notification = document.createElement('div');
+    notification.textContent = '画像を保存しました（黒色版）';
+    notification.style.position = 'fixed';
+    notification.style.bottom = '120px';
+    notification.style.right = '20px';
+    notification.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    notification.style.color = 'white';
+    notification.style.padding = '10px 20px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '1000';
+    notification.style.fontFamily = 'sans-serif';
+    notification.style.fontSize = '14px';
+    
+    // ボディに追加
+    document.body.appendChild(notification);
+    
+    // 3秒後に削除
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.5s';
+        setTimeout(() => document.body.removeChild(notification), 500);
+    }, 3000);
+}
+
+// 円を描画するヘルパー関数（saveCanvasImage用）
+function drawSmoothCircle(g, x, y, radius, detail) {
+    g.beginShape();
+    for (let i = 0; i < TWO_PI; i += TWO_PI / detail) {
+        let vx = x + cos(i) * radius;
+        let vy = y + sin(i) * radius;
+        g.vertex(vx, vy);
+    }
+    g.endShape(CLOSE);
+}
+
+// 角丸四角形を描画するヘルパー関数（saveCanvasImage用）
+function drawRoundedRect(g, x, y, w, h, r) {
+    g.beginShape();
+    // 左上角
+    g.vertex(x + r, y);
+    g.quadraticVertex(x, y, x, y + r);
+    // 左下角
+    g.vertex(x, y + h - r);
+    g.quadraticVertex(x, y + h, x + r, y + h);
+    // 右下角
+    g.vertex(x + w - r, y + h);
+    g.quadraticVertex(x + w, y + h, x + w, y + h - r);
+    // 右上角
+    g.vertex(x + w, y + r);
+    g.quadraticVertex(x + w, y, x + w - r, y);
+    g.endShape(CLOSE);
+}
+
+// ウィンドウサイズが変更されたときに呼ばれる関数
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+    // ボタンの位置を再調整
+    saveButton.position(windowWidth - 120, windowHeight - 60);
 }
 
 function draw() {
@@ -76,7 +200,8 @@ function draw() {
 
     /* 下のレイヤー開始 */
     setUnderLayer();
-    fill(0, 255, 0); // 緑色で塗りつぶし
+    // currentObjectColorを使用して色を設定
+    fill(currentObjectColor[0], currentObjectColor[1], currentObjectColor[2]);
 
     // 四角形を描画
     roundedRect(-slider1Value, -200, slider2Value, 400, 20);
@@ -89,7 +214,8 @@ function draw() {
 
     /* 上のレイヤー開始 */
     setOverLayer();
-    fill(0, 255, 0); // 緑色で塗りつぶし
+    // currentObjectColorを使用して色を設定
+    fill(currentObjectColor[0], currentObjectColor[1], currentObjectColor[2]);
 
 
     // 円を描画
@@ -102,7 +228,8 @@ function draw() {
     //マスク部分を描画
     drawMask(color(255, 255, 255));
 
-    console.log("Received:", result);
+    // 必要な場合のみログ出力
+    // console.log("Received:", result);
 }
 
 
@@ -206,4 +333,3 @@ function getData() {
         console.log("Updated sliderValues:", sliderValues);
     }
 }
-
