@@ -6,9 +6,9 @@
         body { margin: 0px; padding: 0px; }
         .slider-container {
             position: fixed;
-            left: 20px; 
+            right: 20px; 
             top: 20px;
-            background: rgba(224, 224, 224, 0.605);
+            background: rgba(255, 255, 255, 0.8);
             padding: 15px;
             border-radius: 5px;
         }
@@ -28,10 +28,12 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <script src="./lib/p5.serialport.js"></script>
     <script src="canvas.js"></script>
 </head>
 
 <body>
+    
     <div class="slider-container">
         <div class="slider-item">
             <label for="slider1">Slider 1</label>
@@ -49,5 +51,6 @@
             <span class="value-display" id="value3">0.5</span>
         </div>
     </div>
+   
 </body>
 </html>
