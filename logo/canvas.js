@@ -21,6 +21,8 @@ let saveButton;
 let canvas, gl;
 
 function setup() {
+    document.documentElement.style.overflow = 'hidden';
+
     // ステンシルバッファを有効にする
     setAttributes("stencil", true);
     // キャンバスをWEBGLモードで作成
@@ -55,9 +57,17 @@ function setup() {
     serial.list();
     serial.on('list', updatePort);
     serial.on('data', getData);
-    
-    // 保存ボタンを作成
-    createSaveButton();
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+}
+
+function keyPressed() {
+    if (key === 's' || key === 'S') {
+        saveCanvasImage();
+        return false;
+    }
 }
 
 // 保存ボタンを作成する関数
@@ -99,11 +109,11 @@ function saveCanvasImage() {
         saveCanvas(canvas, filename, 'png');
         
         // 保存の通知
-        console.log(`画像を保存しました: ${filename}.png (黒色バージョン)`);
-        console.log('印刷サイズ: 5×7インチ (画像編集ソフトで印刷時に設定してください)');
+        // console.log(`画像を保存しました: ${filename}.png (黒色バージョン)`);
+        // console.log('印刷サイズ: 5×7インチ (画像編集ソフトで印刷時に設定してください)');
         
         // 画面に一時的な通知を表示
-        showSaveNotification();
+        // showSaveNotification();
     } finally {
         // 元の色に戻す（try-finallyで確実に元に戻す）
         currentObjectColor = originalColorValues;
@@ -194,9 +204,9 @@ function draw() {
 
     //Sliderの値を取得
     //以下の値を加工してコンテンツに適用する
-    let slider1Value = sliderValues.slider1 * 100;
-    let slider2Value = sliderValues.slider2 * 200;
-    let slider3Value = sliderValues.slider3 * 200;
+    let slider1Value = sliderValues.slider1 * 300 - 90;
+    let slider2Value = 30 + sliderValues.slider2 * 300;
+    let slider3Value = sliderValues.slider3 * 330;
 
     /* 下のレイヤー開始 */
     setUnderLayer();
